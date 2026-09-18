@@ -1,0 +1,7 @@
+# 无构建、无依赖，忽略编辑器与系统产生的杂项
+Thumbs.db
+desktop.ini
+.DS_Store
+*.log
+.idea/
+.vscode/

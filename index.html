@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Java 程序题练习 · 单元1-2</title>
+<meta name="description" content="Java 程序设计 单元1-2 程序题练习：21 道题，可在浏览器里直接编写并运行 Java 代码。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☕</text></svg>">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/material-darker.min.css">
+</head>
+<body>
+
+<header class="topbar">
+  <button class="icon-btn only-mobile" id="menuBtn" aria-label="题目列表">☰</button>
+  <div class="brand">
+    <span class="logo">J</span>
+    <div class="brand-text">
+      <h1>Java 程序题练习</h1>
+      <p class="sub" id="subTitle">单元1-2 · 21 道程序题</p>
+    </div>
+  </div>
+  <div class="top-actions">
+    <div class="progress-wrap" title="已完成题数">
+      <div class="progress"><span id="progressBar"></span></div>
+      <span class="progress-text" id="progressText">0 / 21</span>
+    </div>
+    <button class="icon-btn" id="themeBtn" title="切换深色/浅色">🌙</button>
+  </div>
+</header>
+
+<main class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="side-head">
+      <input id="searchInput" type="search" placeholder="搜索题号 / 关键字" autocomplete="off">
+      <div class="filters" id="filters">
+        <button class="chip active" data-filter="all">全部</button>
+        <button class="chip" data-filter="todo">未完成</button>
+        <button class="chip" data-filter="done">已完成</button>
+      </div>
+    </div>
+    <ol class="qlist" id="qlist"></ol>
+    <div class="side-foot">
+      <button class="mini" id="resetAllBtn">清空全部进度</button>
+    </div>
+  </aside>
+
+  <section class="panel">
+    <div class="q-head">
+      <div class="q-head-left">
+        <span class="q-no" id="qNo">第 1 题</span>
+        <span class="q-type" id="qType">程序题</span>
+      </div>
+      <label class="done-toggle">
+        <input type="checkbox" id="doneChk">
+        <span>已完成</span>
+      </label>
+    </div>
+
+    <article class="stem" id="stem"></article>
+
+    <div class="section-title">
+      <span>你的代码</span>
+      <div class="mini-actions">
+        <button class="mini" id="resetBtn">重置代码</button>
+        <button class="mini" id="copyBtn">复制</button>
+      </div>
+    </div>
+    <div class="editor-wrap">
+      <textarea id="editor" spellcheck="false"></textarea>
+    </div>
+
+    <div class="section-title">
+      <span>程序输入 stdin</span>
+      <span class="hint">程序运行时需要从键盘输入的内容，一行一个；已预填一组示例输入</span>
+    </div>
+    <textarea id="stdin" class="stdin" spellcheck="false" placeholder="例如：1221"></textarea>
+
+    <div class="run-bar">
+      <button class="btn primary" id="runBtn">
+        <span class="play">▶</span> 运行
+        <kbd>Ctrl</kbd><kbd>Enter</kbd>
+      </button>
+      <button class="btn" id="refBtn">查看参考答案</button>
+      <button class="btn ghost" id="clearOutBtn">清空输出</button>
+      <span class="run-status" id="runStatus"></span>
+    </div>
+
+    <div class="notice" id="notice" hidden></div>
+
+    <div class="console" id="console" hidden>
+      <div class="console-head">
+        <span class="verdict" id="verdict">—</span>
+        <span class="metrics" id="metrics"></span>
+      </div>
+      <div class="console-block" id="stdoutBlock">
+        <div class="block-label">输出 stdout</div>
+        <pre class="out" id="stdout"></pre>
+      </div>
+      <div class="console-block" id="stderrBlock" hidden>
+        <div class="block-label">错误 stderr</div>
+        <pre class="out err" id="stderr"></pre>
+      </div>
+      <div class="console-block" id="compileBlock" hidden>
+        <div class="block-label">编译信息</div>
+        <pre class="out err" id="compileOut"></pre>
+      </div>
+    </div>
+
+    <div class="ref-box" id="refBox" hidden>
+      <div class="ref-head">
+        <span>参考答案</span>
+        <span class="hint">本人当年提交并通过评测的代码，仅供对照</span>
+        <button class="mini" id="loadRefBtn">载入到编辑器</button>
+      </div>
+      <pre class="ref-code" id="refCode"></pre>
+    </div>
+  </section>
+</main>
+
+<div class="scrim" id="scrim"></div>
+<div class="lightbox" id="lightbox" hidden><img id="lightboxImg" alt=""></div>
+<div class="toast" id="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/clike/clike.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/selection/active-line.min.js"></script>
+<script src="assets/questions.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>
