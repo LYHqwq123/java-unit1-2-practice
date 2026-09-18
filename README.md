@@ -24,7 +24,9 @@
 
 ## 在线使用
 
-部署到 GitHub Pages 后，直接访问仓库的 Pages 地址即可，手机上也能打开。
+**👉 https://lyhqwq123.github.io/java-unit1-2-practice/**
+
+已经部署在 GitHub Pages 上，手机、平板、任何电脑打开就能刷题，进度存在各自的浏览器里。
 
 ## 本地使用
 
