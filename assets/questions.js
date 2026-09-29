@@ -3,9 +3,10 @@ window.QUIZ_DATA = {
   "meta": {
     "title": "单元1-2",
     "course": "Java 程序设计",
-    "count": 21,
+    "count": 22,
     "fullScore": "100",
-    "section": "一. 程序题（共21题，100分）"
+    "section": "一. 程序题（共21题，100分）",
+    "supplementCount": 1
   },
   "questions": [
     {
@@ -20,7 +21,24 @@ window.QUIZ_DATA = {
         "0d0aac9ccd646915af15bc90e2a08e6e.png"
       ],
       "refCode": "import java.util.Scanner;\npublic class Main {\n      public static void main(String[] args) {\n                Scanner sc = new Scanner(System.in);\n                System.out.print(\"请输入长度为4位的数字：\");\n                String s = sc.next();\n                if(s.length() != 4){\n                              System.out.println(\"错误，输入的数字长度不为4。\");\n                }else{\n                              if(s.charAt(0)==s.charAt(3) && s.charAt(1)==s.charAt(2)){\n                                                System.out.println(s+\"是一个回文数！\");\n                              }else{\n                                                System.out.println(s+\"不是一个回文数！\");\n                              }\n                }\n      }\n}",
-      "sampleStdin": "1221"
+      "sampleStdin": "1221",
+      "tests": [
+        {
+          "name": "示例输入",
+          "stdin": "1221",
+          "expectedStdout": "请输入长度为4位的数字：1221是一个回文数！\r\n"
+        },
+        {
+          "name": "测试2",
+          "stdin": "1456",
+          "expectedStdout": "请输入长度为4位的数字：1456不是一个回文数！\r\n"
+        },
+        {
+          "name": "测试3",
+          "stdin": "56",
+          "expectedStdout": "请输入长度为4位的数字：错误，输入的数字长度不为4。\r\n"
+        }
+      ]
     },
     {
       "no": 2,
@@ -34,7 +52,24 @@ window.QUIZ_DATA = {
         "ecdb8efa94c1a6428cb7a61c70e805ad.png"
       ],
       "refCode": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        System.out.print(\"请输入购鸡的钱数：\");\n        int money = sc.nextInt();\n        System.out.println(money + \"钱买百鸡的方案如下\");\n\n        boolean found = false;\n\n        for (int h = 0; h <= 100; h++) {\n            for (int r = 0; r <= 100 - h; r++) {\n                int c = 100 - h - r;\n\n                if (c >= 0 && c % 3 == 0 && 5 * h + 3 * r + c / 3 == money) {\n                    System.out.println(\"母鸡：\" + h + \"只，公鸡：\" + r + \"只，小鸡：\" + c + \"只\");\n                    found = true;\n                }\n            }\n        }\n\n        if (!found) {\n            System.out.println(\"没有可执行的方案！\");\n        }\n    }\n}",
-      "sampleStdin": "100"
+      "sampleStdin": "100",
+      "tests": [
+        {
+          "name": "示例输入",
+          "stdin": "100",
+          "expectedStdout": "请输入购鸡的钱数：100钱买百鸡的方案如下\r\n母鸡：0只，公鸡：25只，小鸡：75只\r\n母鸡：4只，公鸡：18只，小鸡：78只\r\n母鸡：8只，公鸡：11只，小鸡：81只\r\n母鸡：12只，公鸡：4只，小鸡：84只\r\n"
+        },
+        {
+          "name": "测试2",
+          "stdin": "50",
+          "expectedStdout": "请输入购鸡的钱数：50钱买百鸡的方案如下\r\n母鸡：3只，公鸡：1只，小鸡：96只\r\n"
+        },
+        {
+          "name": "测试3",
+          "stdin": "145",
+          "expectedStdout": "请输入购鸡的钱数：145钱买百鸡的方案如下\r\n没有可执行的方案！\r\n"
+        }
+      ]
     },
     {
       "no": 3,
@@ -48,7 +83,29 @@ window.QUIZ_DATA = {
         "49232d9b3fd883c2b495abd185f357ed.png"
       ],
       "refCode": "import java.util.Scanner;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        System.out.print(\"请输入寄件的地区编号：\");\n        int area = sc.nextInt();\n        if (area < 1 || area > 3) {\n            System.out.println(\"输入的寄件的地区编号有误！\");\n        } else {\n            System.out.print(\"请输入快递重量（kg）：\");\n            int weight = sc.nextInt();\n            int money = 0;\n            if (area == 1) {\n\n                money = 12;\n                if (weight > 2) {\n                    money += (weight - 2) * 2;\n                }\n            } else if (area == 2) {\n\n                money = 13;\n                if (weight > 2) {\n                    money += (weight - 2) * 3;\n                }\n            } else if (area == 3) {\n\n                money = 14;\n                if (weight > 2) {\n                    money += (weight - 2) * 3;\n                }\n            }\n            System.out.println(\"本次快递费为：\" + money + \"元\");\n        }\n    }\n}",
-      "sampleStdin": "2 5"
+      "sampleStdin": "2 5",
+      "tests": [
+        {
+          "name": "示例输入",
+          "stdin": "2 5",
+          "expectedStdout": "请输入寄件的地区编号：请输入快递重量（kg）：本次快递费为：22元\r\n"
+        },
+        {
+          "name": "测试2",
+          "stdin": "1 2",
+          "expectedStdout": "请输入寄件的地区编号：请输入快递重量（kg）：本次快递费为：12元\r\n"
+        },
+        {
+          "name": "测试3",
+          "stdin": "3 4",
+          "expectedStdout": "请输入寄件的地区编号：请输入快递重量（kg）：本次快递费为：20元\r\n"
+        },
+        {
+          "name": "测试4",
+          "stdin": "4",
+          "expectedStdout": "请输入寄件的地区编号：输入的寄件的地区编号有误！\r\n"
+        }
+      ]
     },
     {
       "no": 4,
@@ -63,7 +120,29 @@ window.QUIZ_DATA = {
         "b179f8b750b22531d7eb7380c4e25c91.png"
       ],
       "refCode": "import java.util.Scanner;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        System.out.print(\"请输入第一个操作数（例如：12）：\");\n        double num1 = sc.nextDouble();\n        System.out.print(\"请输入四则运算符（例如：+、-、*、/）：\");\n        String opStr = sc.next();\n        char op = opStr.charAt(0);\n        System.out.print(\"请输入第二个操作数（例如：8）：\");\n        double num2 = sc.nextDouble();\n        double res = 0;\n        switch (op) {\n            case '+':\n                res = num1 + num2;\n                break;\n            case '-':\n                res = num1 - num2;\n                break;\n            case '*':\n                res = num1 * num2;\n                break;\n            case '/':\n                res = num1 / num2;\n                break;\n            default:\n                System.out.println(\"运算符错误\");\n                return;\n        }\n        System.out.println(num1 + (\"\" + op) + num2 + \"=\" + res);\n    }\n}",
-      "sampleStdin": "12 + 8"
+      "sampleStdin": "12 + 8",
+      "tests": [
+        {
+          "name": "示例输入",
+          "stdin": "12 + 8",
+          "expectedStdout": "请输入第一个操作数（例如：12）：请输入四则运算符（例如：+、-、*、/）：请输入第二个操作数（例如：8）：12.0+8.0=20.0\r\n"
+        },
+        {
+          "name": "测试2",
+          "stdin": "12 - 8",
+          "expectedStdout": "请输入第一个操作数（例如：12）：请输入四则运算符（例如：+、-、*、/）：请输入第二个操作数（例如：8）：12.0-8.0=4.0\r\n"
+        },
+        {
+          "name": "测试3",
+          "stdin": "12 * 2",
+          "expectedStdout": "请输入第一个操作数（例如：12）：请输入四则运算符（例如：+、-、*、/）：请输入第二个操作数（例如：8）：12.0*2.0=24.0\r\n"
+        },
+        {
+          "name": "测试4",
+          "stdin": "12 / 2",
+          "expectedStdout": "请输入第一个操作数（例如：12）：请输入四则运算符（例如：+、-、*、/）：请输入第二个操作数（例如：8）：12.0/2.0=6.0\r\n"
+        }
+      ]
     },
     {
       "no": 5,
@@ -75,7 +154,14 @@ window.QUIZ_DATA = {
         "e302911f5807c648ff04ebe1afaea1d7.png"
       ],
       "refCode": "import java.util.Scanner;\n\npublic class Main {\n        public static void main(String[] args) {\n                          int sum = 0, flag = 1;\n                          for(int i = 1; i <= 101; i += 2) {\n                                                          sum += flag * i;\n                                                          flag = -flag;\n                          }\n                          System.out.println(\"1-3+5-7+...-99+101的值是: \"+sum);\n        }\n}",
-      "sampleStdin": ""
+      "sampleStdin": "",
+      "tests": [
+        {
+          "name": "示例输入",
+          "stdin": "",
+          "expectedStdout": "1-3+5-7+...-99+101的值是: 51\r\n"
+        }
+      ]
     },
     {
       "no": 6,
@@ -88,7 +174,24 @@ window.QUIZ_DATA = {
         "e9fe0147ab9574092bcc811479869a63.png"
       ],
       "refCode": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        System.out.print(\"输入n：\");\n        int n = sc.nextInt();\n\n        double sum = 0.0;\n        double a = 2;\n        double b = 1;\n\n        for (int i = 0; i < n; i++) {\n            sum += a / b;\n            double temp = a;\n            a = a + b;\n            b = temp;\n        }\n\n        System.out.println(\"前\" + n + \"项的和是: \" + sum);\n    }\n}",
-      "sampleStdin": "5"
+      "sampleStdin": "5",
+      "tests": [
+        {
+          "name": "示例输入",
+          "stdin": "5",
+          "expectedStdout": "输入n：前5项的和是: 8.391666666666667\r\n"
+        },
+        {
+          "name": "测试2",
+          "stdin": "1",
+          "expectedStdout": "输入n：前1项的和是: 2.0\r\n"
+        },
+        {
+          "name": "测试3",
+          "stdin": "10",
+          "expectedStdout": "输入n：前10项的和是: 16.479905306194137\r\n"
+        }
+      ]
     },
     {
       "no": 7,
@@ -100,7 +203,24 @@ window.QUIZ_DATA = {
         "1d740fa90fbf60706bbdc1cad517994f.png"
       ],
       "refCode": "import java.util.Scanner;\npublic class Main {\n      public static void main(String[] args) {\n                Scanner sc = new Scanner(System.in);\n                System.out.print(\"请输入一个字符串：\");\n                String str = sc.nextLine();\n                int count = 0;\n                for(int i = 0; i < str.length(); i++){\n                              char c = str.charAt(i);\n                              if(c >= '0' && c <= '9'){\n                                                count++;\n                              }\n                }\n                System.out.println(str + \"中数字字符的数量是：\" + count);\n      }\n}",
-      "sampleStdin": "abc123def45"
+      "sampleStdin": "abc123def45",
+      "tests": [
+        {
+          "name": "示例输入",
+          "stdin": "abc123def45",
+          "expectedStdout": "请输入一个字符串：abc123def45中数字字符的数量是：5\r\n"
+        },
+        {
+          "name": "测试2",
+          "stdin": "abcdef",
+          "expectedStdout": "请输入一个字符串：abcdef中数字字符的数量是：0\r\n"
+        },
+        {
+          "name": "测试3",
+          "stdin": "12345",
+          "expectedStdout": "请输入一个字符串：12345中数字字符的数量是：5\r\n"
+        }
+      ]
     },
     {
       "no": 8,
@@ -113,7 +233,24 @@ window.QUIZ_DATA = {
         "afb9a4391e08495ce6ae6100816f2988.png"
       ],
       "refCode": "import java.util.Scanner;\npublic class Main {\n      public static void main(String[] args) {\n                Scanner sc = new Scanner(System.in);\n                System.out.print(\"请输入一个整数n：\");\n                int n = sc.nextInt();\n                int sum = 0;\n                for(int i = 1; i <= n; i++){\n                              if(i % 2 == 0 || i % 3 == 0){\n                                                sum += i;\n                              }\n                }\n                System.out.println(\"1到\" + n + \"中所有能够被2或者被3整除的数之和是：\" + sum);\n      }\n}",
-      "sampleStdin": "10"
+      "sampleStdin": "10",
+      "tests": [
+        {
+          "name": "示例输入",
+          "stdin": "10",
+          "expectedStdout": "请输入一个整数n：1到10中所有能够被2或者被3整除的数之和是：42\r\n"
+        },
+        {
+          "name": "测试2",
+          "stdin": "1",
+          "expectedStdout": "请输入一个整数n：1到1中所有能够被2或者被3整除的数之和是：0\r\n"
+        },
+        {
+          "name": "测试3",
+          "stdin": "20",
+          "expectedStdout": "请输入一个整数n：1到20中所有能够被2或者被3整除的数之和是：137\r\n"
+        }
+      ]
     },
     {
       "no": 9,
@@ -126,7 +263,24 @@ window.QUIZ_DATA = {
         "c091e68e3dcb36ca3afac97ee099c0ea.png"
       ],
       "refCode": "import java.util.Scanner;\npublic class Main {\n      public static void main(String[] args) {\n                Scanner sc = new Scanner(System.in);\n                System.out.print(\"请输入正整数的个数n：\");\n                int n = sc.nextInt();\n                System.out.println(\"请输入\" + n + \"个正整数：\");\n                int max = 0;\n                for(int i = 0; i < n; i++){\n                              int num = sc.nextInt();\n                              if(num > max){\n                                                max = num;\n                              }\n                }\n                System.out.println(\"最大值为：\" + max);\n      }\n}",
-      "sampleStdin": "5\n3 7 2 9 4"
+      "sampleStdin": "5\n3 7 2 9 4",
+      "tests": [
+        {
+          "name": "示例输入",
+          "stdin": "5\n3 7 2 9 4",
+          "expectedStdout": "请输入正整数的个数n：请输入5个正整数：\r\n最大值为：9\r\n"
+        },
+        {
+          "name": "测试2",
+          "stdin": "1\n5",
+          "expectedStdout": "请输入正整数的个数n：请输入1个正整数：\r\n最大值为：5\r\n"
+        },
+        {
+          "name": "测试3",
+          "stdin": "4\n100 5 40 90",
+          "expectedStdout": "请输入正整数的个数n：请输入4个正整数：\r\n最大值为：100\r\n"
+        }
+      ]
     },
     {
       "no": 10,
@@ -139,7 +293,24 @@ window.QUIZ_DATA = {
         "e237718ba25cfaaf09cb0a8dcf22366b.png"
       ],
       "refCode": "import java.util.Scanner;\npublic class Main {\n      public static void main(String[] args) {\n                Scanner sc = new Scanner(System.in);\n                System.out.print(\"请输入整数m（m <= n）：\");\n                int m = sc.nextInt();\n                System.out.print(\"请输入整数n（m <= n）：\");\n                int n = sc.nextInt();\n        \n                if(m > n){\n                              System.out.println(\"m应该小于等于n\");\n                }else{\n                              int sum = 0;\n                              for(int i = m; i <= n; i++){\n                                                sum += i;\n                              }\n                              System.out.println(m + \"~\" + n + \"的所有整数之和为：\" + sum);\n                }\n      }\n}",
-      "sampleStdin": "1 100"
+      "sampleStdin": "1 100",
+      "tests": [
+        {
+          "name": "示例输入",
+          "stdin": "1 100",
+          "expectedStdout": "请输入整数m（m <= n）：请输入整数n（m <= n）：1~100的所有整数之和为：5050\r\n"
+        },
+        {
+          "name": "测试2",
+          "stdin": "5 10",
+          "expectedStdout": "请输入整数m（m <= n）：请输入整数n（m <= n）：5~10的所有整数之和为：45\r\n"
+        },
+        {
+          "name": "测试3",
+          "stdin": "10 5",
+          "expectedStdout": "请输入整数m（m <= n）：请输入整数n（m <= n）：m应该小于等于n\r\n"
+        }
+      ]
     },
     {
       "no": 11,
@@ -152,7 +323,24 @@ window.QUIZ_DATA = {
         "1fd2cbef0ef5adfc29013e7b0a19ea8b.png"
       ],
       "refCode": "import java.util.Scanner;\n\npublic class Main {\n      public static void main(String[] args) {\n                Scanner sc = new Scanner(System.in);\n                System.out.print(\"请输入数字a：\");\n                int a = sc.nextInt();\n                System.out.print(\"请输入项数n：\");\n                int n = sc.nextInt();\n        \n                long sum = 0;\n                long item = 0;\n                for (int i = 0; i < n; i++) {\n                              item = item * 10 + a;\n                              sum += item;\n                }\n                System.out.println(\"序列的和Sn为：\" + sum);\n                sc.close();\n      }\n}",
-      "sampleStdin": "2 3"
+      "sampleStdin": "2 3",
+      "tests": [
+        {
+          "name": "示例输入",
+          "stdin": "2 3",
+          "expectedStdout": "请输入数字a：请输入项数n：序列的和Sn为：246\r\n"
+        },
+        {
+          "name": "测试2",
+          "stdin": "1 5",
+          "expectedStdout": "请输入数字a：请输入项数n：序列的和Sn为：12345\r\n"
+        },
+        {
+          "name": "测试3",
+          "stdin": "3 1",
+          "expectedStdout": "请输入数字a：请输入项数n：序列的和Sn为：3\r\n"
+        }
+      ]
     },
     {
       "no": 12,
@@ -165,7 +353,24 @@ window.QUIZ_DATA = {
         "f5d2bc83a63b1a478d295accdad84f03.png"
       ],
       "refCode": "import java.util.Scanner;\n\npublic class Main {\n\n    public static long fact(int n) {\n        if (n == 0 || n == 1) {\n            return 1;\n        }\n        return n * fact(n - 1);\n    }\n\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        System.out.print(\"请输入n：\");\n        int n = sc.nextInt();\n        long res = fact(n);\n        System.out.println(n + \"! = \" + res);\n        sc.close();\n    }\n}",
-      "sampleStdin": "5"
+      "sampleStdin": "5",
+      "tests": [
+        {
+          "name": "示例输入",
+          "stdin": "5",
+          "expectedStdout": "请输入n：5! = 120\r\n"
+        },
+        {
+          "name": "测试2",
+          "stdin": "0",
+          "expectedStdout": "请输入n：0! = 1\r\n"
+        },
+        {
+          "name": "测试3",
+          "stdin": "3",
+          "expectedStdout": "请输入n：3! = 6\r\n"
+        }
+      ]
     },
     {
       "no": 13,
@@ -178,7 +383,24 @@ window.QUIZ_DATA = {
         "c17275e60522cac56bfcb57bba879c74.png"
       ],
       "refCode": "import java.util.Scanner;\n\npublic class Main {\n      public static void main(String[] args) {\n                Scanner input = new Scanner(System.in);\n        \n                int count = 0;\n                double sum = 0;\n        \n                System.out.println(\"请输入一组数据（输入0结束）:\");\n        \n                double num = input.nextDouble();\n        \n                while (num != 0) {\n                              sum += num;\n                              count++;\n                              num = input.nextDouble();\n                }\n        \n                System.out.println(\"输入数据的个数: \" + count);\n                System.out.printf(\"输入数据的平均值: %.1f\", sum / count);\n      }\n}",
-      "sampleStdin": "85 92 78 90 0"
+      "sampleStdin": "85 92 78 90 0",
+      "tests": [
+        {
+          "name": "示例输入",
+          "stdin": "85 92 78 90 0",
+          "expectedStdout": "请输入一组数据（输入0结束）:\r\n输入数据的个数: 4\r\n输入数据的平均值: 86.3"
+        },
+        {
+          "name": "测试2",
+          "stdin": "1 2 3 4 0",
+          "expectedStdout": "请输入一组数据（输入0结束）:\r\n输入数据的个数: 4\r\n输入数据的平均值: 2.5"
+        },
+        {
+          "name": "测试3",
+          "stdin": "3 4 10 0",
+          "expectedStdout": "请输入一组数据（输入0结束）:\r\n输入数据的个数: 3\r\n输入数据的平均值: 5.7"
+        }
+      ]
     },
     {
       "no": 14,
@@ -191,7 +413,24 @@ window.QUIZ_DATA = {
         "ac8d98f4eae4a001f4f2b299e3c4fea8.png"
       ],
       "refCode": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int a = sc.nextInt();\n        int b = sc.nextInt();\n        int c = sc.nextInt();\n        int temp;\n\n        if (a < b) {\n            temp = a;\n            a = b;\n            b = temp;\n        }\n        if (a < c) {\n            temp = a;\n            a = c;\n            c = temp;\n        }\n\n        if (b < c) {\n            temp = b;\n            b = c;\n            c = temp;\n        }\n        System.out.println(a + \",\" + b + \",\" + c);\n        sc.close();\n    }\n}",
-      "sampleStdin": "3 1 2"
+      "sampleStdin": "3 1 2",
+      "tests": [
+        {
+          "name": "示例输入",
+          "stdin": "3 1 2",
+          "expectedStdout": "3,2,1\r\n"
+        },
+        {
+          "name": "测试2",
+          "stdin": "5 2 4",
+          "expectedStdout": "5,4,2\r\n"
+        },
+        {
+          "name": "测试3",
+          "stdin": "2 2 1",
+          "expectedStdout": "2,2,1\r\n"
+        }
+      ]
     },
     {
       "no": 15,
@@ -205,7 +444,34 @@ window.QUIZ_DATA = {
         "e8ca2a59a1e06ff46a9361aad0c6c336.png"
       ],
       "refCode": "import java.util.Scanner;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        System.out.println(\"请输入x的值：\");\n        double x = sc.nextDouble();\n        double f;\n        if (x <= 0) {\n            f = x * x * x + 5;\n        } else if (x <= 20) {\n            f = x * x - x + 3;\n        } else {\n            f = 7 * x + 2;\n        }\n        System.out.println(\"f(x)的值为：\" + f);\n        sc.close();\n    }\n}",
-      "sampleStdin": "2"
+      "sampleStdin": "2",
+      "tests": [
+        {
+          "name": "示例输入",
+          "stdin": "2",
+          "expectedStdout": "请输入x的值：\r\nf(x)的值为：5.0\r\n"
+        },
+        {
+          "name": "测试2",
+          "stdin": "-2",
+          "expectedStdout": "请输入x的值：\r\nf(x)的值为：-3.0\r\n"
+        },
+        {
+          "name": "测试3",
+          "stdin": "0",
+          "expectedStdout": "请输入x的值：\r\nf(x)的值为：5.0\r\n"
+        },
+        {
+          "name": "测试4",
+          "stdin": "20",
+          "expectedStdout": "请输入x的值：\r\nf(x)的值为：383.0\r\n"
+        },
+        {
+          "name": "测试5",
+          "stdin": "30",
+          "expectedStdout": "请输入x的值：\r\nf(x)的值为：212.0\r\n"
+        }
+      ]
     },
     {
       "no": 16,
@@ -218,7 +484,24 @@ window.QUIZ_DATA = {
         "07a522e3f3f7901551722f90656cae5c.png"
       ],
       "refCode": "import java.util.Scanner;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        System.out.print(\"请输入一个正整数：\");\n        int k = sc.nextInt();\n\n        String s = String.valueOf(k);\n        int len = s.length();\n\n        String reverse = \"\";\n        for (int i = len - 1; i >= 0; i--) {\n            reverse += s.charAt(i);\n        }\n        System.out.println(k + \"是一个\" + len + \"位数，逆序输出为：\" + reverse);\n        sc.close();\n    }\n}",
-      "sampleStdin": "12345"
+      "sampleStdin": "12345",
+      "tests": [
+        {
+          "name": "示例输入",
+          "stdin": "12345",
+          "expectedStdout": "请输入一个正整数：12345是一个5位数，逆序输出为：54321\r\n"
+        },
+        {
+          "name": "测试2",
+          "stdin": "123",
+          "expectedStdout": "请输入一个正整数：123是一个3位数，逆序输出为：321\r\n"
+        },
+        {
+          "name": "测试3",
+          "stdin": "1000",
+          "expectedStdout": "请输入一个正整数：1000是一个4位数，逆序输出为：0001\r\n"
+        }
+      ]
     },
     {
       "no": 17,
@@ -231,7 +514,24 @@ window.QUIZ_DATA = {
         "7f0593285ec3fe5680d3e8c17c5ef246.png"
       ],
       "refCode": "import java.util.Scanner;\npublic class Main {\n\n    public static boolean is(int n) {\n        int a = n / 100;\n        int b = n / 10 % 10;\n        int c = n % 10;\n        int sum = a * a * a + b * b * b + c * c * c;\n        return sum == n;\n    }\n\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        System.out.print(\"输入一个三位整数：\");\n        int num = sc.nextInt();\n        boolean res = is(num);\n        System.out.println(num + \"是否为水仙花数？\" + res);\n        sc.close();\n    }\n}",
-      "sampleStdin": "153"
+      "sampleStdin": "153",
+      "tests": [
+        {
+          "name": "示例输入",
+          "stdin": "153",
+          "expectedStdout": "输入一个三位整数：153是否为水仙花数？true\r\n"
+        },
+        {
+          "name": "测试2",
+          "stdin": "350",
+          "expectedStdout": "输入一个三位整数：350是否为水仙花数？false\r\n"
+        },
+        {
+          "name": "测试3",
+          "stdin": "370",
+          "expectedStdout": "输入一个三位整数：370是否为水仙花数？true\r\n"
+        }
+      ]
     },
     {
       "no": 18,
@@ -243,7 +543,14 @@ window.QUIZ_DATA = {
         "81b9b9ee03f9efa49af51f55670dface.png"
       ],
       "refCode": "public class Main {\n    public static void main(String[] args) {\n        int count = 0;\n        for (int i = 1; i <= 4; i++) {\n            for (int j = 1; j <= 4; j++) {\n                for (int k = 1; k <= 4; k++) {\n\n                    if (i != j && j != k && i != k) {\n                        int num = i * 100 + j * 10 + k;\n                        System.out.println(num);\n                        count++;\n                    }\n                }\n            }\n        }\n        System.out.println(\"共有\" + count + \"种组合\");\n    }\n}",
-      "sampleStdin": ""
+      "sampleStdin": "",
+      "tests": [
+        {
+          "name": "示例输入",
+          "stdin": "",
+          "expectedStdout": "123\r\n124\r\n132\r\n134\r\n142\r\n143\r\n213\r\n214\r\n231\r\n234\r\n241\r\n243\r\n312\r\n314\r\n321\r\n324\r\n341\r\n342\r\n412\r\n413\r\n421\r\n423\r\n431\r\n432\r\n共有24种组合\r\n"
+        }
+      ]
     },
     {
       "no": 19,
@@ -255,7 +562,14 @@ window.QUIZ_DATA = {
         "9711d0b7a2baa7eb12f89b063b9202b0.png"
       ],
       "refCode": "public class Main {\n    public static void main(String[] args) {\n        int[] arr = {\n            8,\n            2,\n            6,\n            5,\n            9,\n            4,\n            1,\n            3\n        };\n        int len = arr.length;\n\n        for (int i = 0; i < len / 2; i++) {\n            int temp = arr[i];\n            arr[i] = arr[len - 1 - i];\n            arr[len - 1 - i] = temp;\n        }\n\n        for (int i = 0; i < arr.length; i++) {\n            System.out.print(arr[i] + \" \");\n        }\n    }\n}",
-      "sampleStdin": ""
+      "sampleStdin": "",
+      "tests": [
+        {
+          "name": "示例输入",
+          "stdin": "",
+          "expectedStdout": "3 1 4 9 5 6 2 8 "
+        }
+      ]
     },
     {
       "no": 20,
@@ -268,7 +582,24 @@ window.QUIZ_DATA = {
         "e2408b3bad3974b659fecdd033a6e4ef.png"
       ],
       "refCode": "import java.util.Scanner;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int[] arr = new int[5];\n        System.out.println(\"请输入5个整数：\");\n        for (int i = 0; i < 5; i++) {\n            arr[i] = sc.nextInt();\n        }\n        int min = arr[0];\n        for (int i = 1; i < 5; i++) {\n            if (arr[i] < min) {\n                min = arr[i];\n            }\n        }\n        System.out.println(\"数组中的最小值是：\" + min);\n        sc.close();\n    }\n}",
-      "sampleStdin": "5 3 8 1 9"
+      "sampleStdin": "5 3 8 1 9",
+      "tests": [
+        {
+          "name": "示例输入",
+          "stdin": "5 3 8 1 9",
+          "expectedStdout": "请输入5个整数：\r\n数组中的最小值是：1\r\n"
+        },
+        {
+          "name": "测试2",
+          "stdin": "10 5 8 2 4",
+          "expectedStdout": "请输入5个整数：\r\n数组中的最小值是：2\r\n"
+        },
+        {
+          "name": "测试3",
+          "stdin": "5 1 0 -10 100",
+          "expectedStdout": "请输入5个整数：\r\n数组中的最小值是：-10\r\n"
+        }
+      ]
     },
     {
       "no": 21,
@@ -281,7 +612,76 @@ window.QUIZ_DATA = {
         "fc823e241d5ae20bd1c95ce395be8551.png"
       ],
       "refCode": "import java.util.Scanner;\npublic class Main {\n      public static void main(String[] args) {\n                int[] arr = {1, 3, 5, 7, 9, 11, 13, 15};\n                Scanner sc = new Scanner(System.in);\n                System.out.print(\"请输入要查找的数字：\");\n                int target = sc.nextInt();\n        \n                int left = 0;\n                int right = arr.length - 1;\n                int index = -1;\n                //二分查找\n                while(left <= right){\n                              int mid = (left + right)/2;\n                              if(arr[mid] == target){\n                                                index = mid;\n                                                break;\n                              }else if(arr[mid] < target){\n                                                left = mid + 1;\n                              }else{\n                                                right = mid -1;\n                              }\n                }\n                System.out.println(\"查找结果：\" + index);\n                sc.close();\n      }\n}",
-      "sampleStdin": "7"
+      "sampleStdin": "7",
+      "tests": [
+        {
+          "name": "示例输入",
+          "stdin": "7",
+          "expectedStdout": "请输入要查找的数字：查找结果：3\r\n"
+        },
+        {
+          "name": "测试2",
+          "stdin": "1",
+          "expectedStdout": "请输入要查找的数字：查找结果：0\r\n"
+        },
+        {
+          "name": "测试3",
+          "stdin": "15",
+          "expectedStdout": "请输入要查找的数字：查找结果：7\r\n"
+        },
+        {
+          "name": "测试4",
+          "stdin": "10",
+          "expectedStdout": "请输入要查找的数字：查找结果：-1\r\n"
+        }
+      ]
+    },
+    {
+      "no": 22,
+      "id": "classroom-array-guess",
+      "type": "程序题 · 课堂补充",
+      "summary": "猜数游戏：数组遍历、求和、最大值位置与查找",
+      "stem": "<p>练习：猜数游戏。有一个数列：8，4，2，1，23，344，12。</p><p>（1）用循环输出数列的所有值。</p><p>（2）求数列中所有数值的和。</p><p>（3）求最大值及其所在的位置。</p><p>（4）从键盘输入一个整数，判断数列中是否包含此数。</p><p>输出约定：第一行输出数列，第二行输出总和，第三行输出最大值、下标和位置，第四行输出查找结果。数组下标从0开始，位置从1开始；344的下标为5，位置为6。</p><p>示例输入23时，输出：</p><p>8 4 2 1 23 344 12<br>数列的和：394<br>最大值：344，下标：5，位置：6<br>数列中包含23</p><p>输入7时，最后一行输出：数列中不包含7。</p>",
+      "images": [],
+      "sampleStdin": "23",
+      "refCode": "import java.util.Scanner;\npublic class Main {\n    public static void main(String[] args) {\n        int[] arr = {8, 4, 2, 1, 23, 344, 12};\n        for (int i = 0; i < arr.length; i++) {\n            System.out.print(arr[i] + (i == arr.length - 1 ? \"\\n\" : \" \"));\n        }\n        int sum = 0;\n        for (int i = 0; i < arr.length; i++) {\n            sum += arr[i];\n        }\n        System.out.println(\"数列的和：\" + sum);\n        int maxpos = 0, max = arr[0];\n        for (int i = 1; i < arr.length; i++) {\n            if (arr[i] > max) {\n                max = arr[i];\n                maxpos = i;\n            }\n        }\n        System.out.println(\"最大值：\" + max + \"，下标：\" + maxpos\n                + \"，位置：\" + (maxpos + 1));\n        Scanner sc = new Scanner(System.in);\n        int target = sc.nextInt();\n        boolean found = false;\n        for (int i = 0; i < arr.length; i++) {\n            if (arr[i] == target) {\n                found = true;\n                break;\n            }\n        }\n        System.out.println(\"数列中\" + (found ? \"包含\" : \"不包含\") + target);\n        sc.close();\n    }\n}",
+      "tests": [
+        {
+          "name": "示例输入",
+          "stdin": "23",
+          "expectedStdout": "8 4 2 1 23 344 12\n数列的和：394\r\n最大值：344，下标：5，位置：6\r\n数列中包含23\r\n"
+        },
+        {
+          "name": "测试2",
+          "stdin": "8",
+          "expectedStdout": "8 4 2 1 23 344 12\n数列的和：394\r\n最大值：344，下标：5，位置：6\r\n数列中包含8\r\n"
+        },
+        {
+          "name": "测试3",
+          "stdin": "12",
+          "expectedStdout": "8 4 2 1 23 344 12\n数列的和：394\r\n最大值：344，下标：5，位置：6\r\n数列中包含12\r\n"
+        },
+        {
+          "name": "测试4",
+          "stdin": "344",
+          "expectedStdout": "8 4 2 1 23 344 12\n数列的和：394\r\n最大值：344，下标：5，位置：6\r\n数列中包含344\r\n"
+        },
+        {
+          "name": "测试5",
+          "stdin": "7",
+          "expectedStdout": "8 4 2 1 23 344 12\n数列的和：394\r\n最大值：344，下标：5，位置：6\r\n数列中不包含7\r\n"
+        },
+        {
+          "name": "测试6",
+          "stdin": "0",
+          "expectedStdout": "8 4 2 1 23 344 12\n数列的和：394\r\n最大值：344，下标：5，位置：6\r\n数列中不包含0\r\n"
+        },
+        {
+          "name": "测试7",
+          "stdin": "-1",
+          "expectedStdout": "8 4 2 1 23 344 12\n数列的和：394\r\n最大值：344，下标：5，位置：6\r\n数列中不包含-1\r\n"
+        }
+      ]
     }
   ]
 };

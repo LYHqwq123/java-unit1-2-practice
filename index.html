@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Java 程序题练习 · 单元1-2</title>
-<meta name="description" content="Java 程序设计 单元1-2 程序题练习：21 道题，可在浏览器里直接编写并运行 Java 代码。">
+<meta name="description" content="Java 程序设计 单元1-2及课堂补充：22 道题，可在线编写、运行 Java 代码并验证测试用例。">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☕</text></svg>">
 <link rel="stylesheet" href="assets/style.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
@@ -18,13 +18,13 @@
     <span class="logo">J</span>
     <div class="brand-text">
       <h1>Java 程序题练习</h1>
-      <p class="sub" id="subTitle">单元1-2 · 21 道程序题</p>
+      <p class="sub" id="subTitle">单元1-2 · 22 道程序题</p>
     </div>
   </div>
   <div class="top-actions">
     <div class="progress-wrap" title="已完成题数">
       <div class="progress"><span id="progressBar"></span></div>
-      <span class="progress-text" id="progressText">0 / 21</span>
+      <span class="progress-text" id="progressText">0 / 22</span>
     </div>
     <button class="icon-btn" id="themeBtn" title="切换深色/浅色">🌙</button>
   </div>
@@ -42,6 +42,7 @@
     </div>
     <ol class="qlist" id="qlist"></ol>
     <div class="side-foot">
+      <a class="mini" href="assets/java-unit1-2-practice.pdf" download>下载题目与答案 PDF</a>
       <button class="mini" id="resetAllBtn">清空全部进度</button>
     </div>
   </aside>
@@ -82,6 +83,7 @@
         <span class="play">▶</span> 运行
         <kbd>Ctrl</kbd><kbd>Enter</kbd>
       </button>
+      <button class="btn" id="verifyBtn">验证全部用例</button>
       <button class="btn" id="refBtn">查看参考答案</button>
       <button class="btn ghost" id="clearOutBtn">清空输出</button>
       <span class="run-status" id="runStatus"></span>
@@ -111,7 +113,7 @@
     <div class="ref-box" id="refBox" hidden>
       <div class="ref-head">
         <span>参考答案</span>
-        <span class="hint">本人当年提交并通过评测的代码，仅供对照</span>
+        <span class="hint">参考实现；验证时按输出比对，忽略空白差异，保留标点</span>
         <button class="mini" id="loadRefBtn">载入到编辑器</button>
       </div>
       <pre class="ref-code" id="refCode"></pre>

@@ -66,7 +66,7 @@
   var stdoutBlock = $('stdoutBlock'), stdoutEl = $('stdout');
   var stderrBlock = $('stderrBlock'), stderrEl = $('stderr');
   var compileBlock = $('compileBlock'), compileOutEl = $('compileOut');
-  var runBtn = $('runBtn'), runStatus = $('runStatus'), noticeEl = $('notice');
+  var runBtn = $('runBtn'), verifyBtn = $('verifyBtn'), runStatus = $('runStatus'), noticeEl = $('notice');
   var refBox = $('refBox'), refCodeEl = $('refCode');
   var toastEl = $('toast'), lightbox = $('lightbox'), lightboxImg = $('lightboxImg');
   var sidebar = $('sidebar'), scrim = $('scrim');
@@ -221,13 +221,13 @@
     refCodeEl.textContent = q.refCode || '（本题没有收录参考答案）';
     hideNotice();
 
-    if (r.out && typeof r.out === 'string') {
+    if (r.resultVersion === 2 && r.verdictText) {
       consoleEl.hidden = false;
       verdictEl.textContent = r.verdictText || '—';
       verdictEl.className = 'verdict ' + (r.verdictClass || '');
       metricsEl.textContent = r.metrics || '';
-      stdoutEl.textContent = r.out;
-      stdoutBlock.hidden = !r.out;
+      stdoutEl.textContent = r.out || '（程序没有任何输出）';
+      stdoutBlock.hidden = false;
       if (r.errOut) { stderrBlock.hidden = false; stderrEl.textContent = r.errOut; } else { stderrBlock.hidden = true; }
       if (r.compileOut) { compileBlock.hidden = false; compileOutEl.textContent = r.compileOut; } else { compileBlock.hidden = true; }
     } else {
@@ -274,7 +274,7 @@
   var WANDBOX_URL = 'https://wandbox.org/api/compile.json';
 
   var STATUS_TEXT = {
-    3: ['Accepted', 'ok'],
+    3: ['运行成功（未验证）', 'warn'],
     4: ['Wrong Answer', 'bad'],
     5: ['Time Limit Exceeded', 'bad'],
     6: ['Compilation Error', 'bad'],
@@ -288,8 +288,18 @@
     return { text: '完成', cls: '' };
   }
 
-  function runJudge0(code, stdin, onPhase) {
-    return fetch(JUDGE0_URL, {
+  function request(url, options) {
+    var controller = new AbortController();
+    var timer = setTimeout(function () { controller.abort(); }, 30000);
+    options.signal = controller.signal;
+    return fetch(url, options).then(function (res) {
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return res.json();
+    }).finally(function () { clearTimeout(timer); });
+  }
+
+  function runJudge0(code, stdin) {
+    return request(JUDGE0_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -299,16 +309,29 @@
         cpu_time_limit: 5,
         wall_time_limit: 15
       })
-    }).then(function (res) {
-      if (res.status === 429) { var e = new Error('rate'); e.code = 'RATE'; throw e; }
-      if (!res.ok) { var e2 = new Error('http ' + res.status); e2.code = 'HTTP'; throw e2; }
-      return res.json();
+    }).then(function poll(j) {
+      if (j.status && (j.status.id === 1 || j.status.id === 2)) {
+        if (!j.token) throw new Error('评测服务没有返回任务编号');
+        var deadline = Date.now() + 30000;
+        function check() {
+          if (Date.now() > deadline) throw new Error('评测等待超时');
+          return new Promise(function (resolve) { setTimeout(resolve, 1000); }).then(function () {
+            return request('https://ce.judge0.com/submissions/' + encodeURIComponent(j.token) + '?base64_encoded=true', { method: 'GET' });
+          }).then(function (next) {
+            if (next.status && (next.status.id === 1 || next.status.id === 2)) return check();
+            return next;
+          });
+        }
+        return check();
+      }
+      return j;
     }).then(function (j) {
       if (j.error) { var e = new Error(j.error); e.code = 'API'; throw e; }
+      if (!j.status || typeof j.status.id !== 'number') throw new Error('评测服务返回无效结果');
       var info = statusInfo(j.status && j.status.id);
       return {
         backend: 'Judge0 · Java ' + (j.status ? j.status.description : ''),
-        verdict: (j.status && j.status.description) || info.text,
+        verdict: info.text,
         cls: info.cls,
         stdout: b64decode(j.stdout),
         stderr: b64decode(j.stderr),
@@ -323,7 +346,7 @@
   function runWandbox(code, stdin) {
     // Wandbox 的 Java 要求文件名 prog.java，因此把公有类名改成 prog
     var fixed = code.replace(/\bpublic\s+class\s+[A-Za-z_$][\w$]*/, 'public class prog');
-    return fetch(WANDBOX_URL, {
+    return request(WANDBOX_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -333,15 +356,13 @@
         'compiler-option-raw': '-encoding UTF-8',
         'runtime-option-raw': '-Dfile.encoding=UTF-8'
       })
-    }).then(function (res) {
-      if (!res.ok) { var e = new Error('http ' + res.status); e.code = 'HTTP'; throw e; }
-      return res.json();
     }).then(function (j) {
-      var ok = j.status === '0';
+      if (j.status == null) throw new Error('备用服务返回无效结果');
+      var ok = String(j.status) === '0';
       return {
         backend: 'Wandbox · Java',
-        verdict: ok ? 'Accepted（运行结束）' : 'Compilation Error / Runtime Error',
-        cls: ok ? 'ok' : 'bad',
+        verdict: ok ? '运行成功（未验证）' : 'Compilation Error / Runtime Error',
+        cls: ok ? 'warn' : 'bad',
         stdout: j.program_output || '',
         stderr: j.program_error || '',
         compile: j.compiler_error || j.compiler_output || '',
@@ -352,37 +373,37 @@
     });
   }
 
-  function renderResult(r, stdinUsed) {
-    consoleEl.hidden = false;
-    verdictEl.textContent = r.verdict || '完成';
-    verdictEl.className = 'verdict ' + (r.cls || '');
-
+  function renderResult(r, stdinUsed, q) {
     var parts = [r.backend];
     if (r.time != null) parts.push('耗时 ' + r.time + ' s');
     if (r.memory != null) parts.push('内存 ' + (r.memory / 1024).toFixed(1) + ' MB');
-    metricsEl.textContent = parts.join('  ·  ');
-
     var out = r.stdout || '';
-    stdoutEl.textContent = out || (r.statusId === 3 ? '（程序没有任何输出）' : '');
-    stdoutBlock.hidden = !out;
-
     var err = r.stderr || r.message || '';
-    stderrEl.textContent = err;
-    stderrBlock.hidden = !err;
-
     var comp = r.compile || '';
-    compileOutEl.textContent = comp;
-    compileBlock.hidden = !comp;
-
-    var q = currentQ();
     var recd = rec(q);
     recd.out = out;
     recd.errOut = err;
     recd.compileOut = comp;
     recd.verdictText = r.verdict || '完成';
     recd.verdictClass = r.cls || '';
-    recd.metrics = metricsEl.textContent;
+    recd.resultVersion = 2;
+    recd.metrics = parts.join('  ·  ');
     saveState();
+    if (currentQ().id !== q.id) return;
+    consoleEl.hidden = false;
+    verdictEl.textContent = r.verdict || '完成';
+    verdictEl.className = 'verdict ' + (r.cls || '');
+
+    metricsEl.textContent = recd.metrics;
+
+    stdoutEl.textContent = out || (r.statusId === 3 ? '（程序没有任何输出）' : '');
+    stdoutBlock.hidden = false;
+
+    stderrEl.textContent = err;
+    stderrBlock.hidden = !err;
+
+    compileOutEl.textContent = comp;
+    compileBlock.hidden = !comp;
 
     // 友好的失败提示
     if (r.statusId === 6 && /class .* is public, should be declared/.test(comp)) {
@@ -403,11 +424,51 @@
 
   var running = false;
 
-  function doRun() {
+  function normalizeOutput(s) {
+    // 保留数字/英文词的边界，避免把「1 23」误当作「12 3」。
+    return (String(s || '').match(/[A-Za-z0-9_$]+|[^\s]/g) || []).join('\u0000');
+  }
+  function normalizeInput(s) { return String(s || '').trim().replace(/\s+/g, ' '); }
+
+  function assess(r, test) {
+    if (r.statusId !== 3) return r;
+    if (!normalizeOutput(r.stdout)) {
+      r.verdict = '答案不正确：程序没有输出';
+      r.cls = 'bad';
+    } else if (!test || !normalizeOutput(test.expectedStdout)) {
+      r.verdict = '运行成功（当前输入未验证）';
+      r.cls = 'warn';
+    } else if (normalizeOutput(r.stdout) === normalizeOutput(test.expectedStdout)) {
+      r.verdict = '当前用例通过';
+      r.cls = 'ok';
+    } else {
+      r.verdict = '答案不正确：输出不匹配';
+      r.cls = 'bad';
+      r.message = '期望输出：\n' + test.expectedStdout;
+    }
+    return r;
+  }
+
+  function execute(code, stdin) {
+    return runJudge0(code, stdin).catch(function () {
+      runStatus.textContent = '主评测服务不可用，正在尝试备用服务…';
+      return runWandbox(code, stdin);
+    });
+  }
+
+  function doRun(verifyAll) {
+    verifyAll = verifyAll === true;
     if (running) return;
     var q = currentQ();
     var code = editor.get();
-    if (!code.trim()) { toast('请先写点代码'); editor.focus(); return; }
+    if (!code.trim() || normalizeOutput(code.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/[^\n]*/g, '')) ===
+        normalizeOutput(STARTER.replace(/\/\/[^\n]*/g, ''))) {
+      hideNotice();
+      renderResult({ verdict: '尚未作答：请先完成模板', cls: 'bad', statusId: 4,
+        stdout: '', backend: '输入检查' }, false, q);
+      editor.focus();
+      return;
+    }
 
     var m = code.match(/\bpublic\s+class\s+([A-Za-z_$][\w$]*)/);
     if (m && m[1] !== 'Main') {
@@ -427,32 +488,53 @@
 
     running = true;
     runBtn.disabled = true;
+    verifyBtn.disabled = true;
     runStatus.textContent = '正在编译并运行…（首次可能需要几秒）';
     runStatus.className = 'run-status busy';
     hideNotice();
 
     var started = Date.now();
 
-    runJudge0(code, stdin)
-      .catch(function (e) {
-        // 主后端不可用（限流/网络）时退回 Wandbox
-        runStatus.textContent = '主评测服务不可用，正在尝试备用服务…';
-        return runWandbox(code, stdin);
-      })
+    var tests = q.tests || [];
+    var task;
+    if (verifyAll && !tests.length) {
+      task = Promise.reject(new Error('本题暂无测试用例'));
+    } else if (verifyAll) {
+      task = (async function () {
+        var last;
+        for (var i = 0; i < tests.length; i++) {
+          runStatus.textContent = '正在验证用例 ' + (i + 1) + ' / ' + tests.length;
+          last = assess(await execute(code, tests[i].stdin), tests[i]);
+          if (last.cls !== 'ok') {
+            last.verdict = '用例 ' + (i + 1) + ' / ' + tests.length + ' 未通过：' + last.verdict;
+            last.message = '测试输入：\n' + (tests[i].stdin || '（无）') + '\n' + (last.message || '');
+            return last;
+          }
+        }
+        last.verdict = '全部用例通过（' + tests.length + ' / ' + tests.length + '）';
+        return last;
+      })();
+    } else {
+      var test = tests.find(function (t) { return normalizeInput(t.stdin) === normalizeInput(stdin); });
+      task = execute(code, stdin).then(function (r) { return assess(r, test); });
+    }
+    task
       .then(function (r) {
         runStatus.textContent = '运行完成，用时 ' + ((Date.now() - started) / 1000).toFixed(1) + ' 秒';
         runStatus.className = 'run-status';
-        renderResult(r, !!stdin.trim());
+        renderResult(r, !!stdin.trim(), q);
       })
       .catch(function (e) {
         runStatus.textContent = '';
         runStatus.className = 'run-status';
-        showNotice('在线运行服务暂时不可用（' + (e && e.message ? e.message : '网络错误') +
+        renderResult({ verdict: '服务不可用（未验证）', cls: 'warn', stdout: '', backend: '在线运行', statusId: 13 }, false, q);
+        if (currentQ().id === q.id) showNotice('在线运行服务暂时不可用（' + (e && e.message ? e.message : '网络错误') +
           '）。可以稍后重试，或先「查看参考答案」自己核对。');
       })
       .then(function () {
         running = false;
         runBtn.disabled = false;
+        verifyBtn.disabled = false;
       });
   }
 
@@ -499,6 +581,7 @@
   });
 
   runBtn.addEventListener('click', doRun);
+  verifyBtn.addEventListener('click', function () { doRun(true); });
 
   $('refBtn').addEventListener('click', function () {
     refBox.hidden = !refBox.hidden;
