@@ -353,8 +353,8 @@
         compiler: 'openjdk-jdk-21+35',
         code: fixed,
         stdin: stdin,
-        'compiler-option-raw': '-encoding UTF-8',
-        'runtime-option-raw': '-Dfile.encoding=UTF-8'
+        'compiler-option-raw': '-encoding\nUTF-8',
+        'runtime-option-raw': '-Dfile.encoding=UTF-8\n-Dsun.stdout.encoding=UTF-8\n-Dsun.stderr.encoding=UTF-8'
       })
     }).then(function (j) {
       if (j.status == null) throw new Error('备用服务返回无效结果');
